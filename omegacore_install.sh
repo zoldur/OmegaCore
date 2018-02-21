@@ -272,7 +272,9 @@ function install_sentinel() {
   cd $OMEGAHOME/sentinel && ./venv/bin/pip install -r requirements.txt >/dev/null 2>&1
   cd $OMEGAHOME
   chown -R $OMEGAUSER: $OMEGAHOME/sentinel
-  echo  "* * * * * cd $OMEGAHOME/sentinel && ./venv/bin/python bin/sentinel.py >> ~/sentinel.log 2>&1" >> omega_cron >/dev/null 2>&1    chown -R $OMEGAUSER: $OMEGAHOME/sentinel >/dev/null 2>&1
+  echo  "* * * * * cd $OMEGAHOME/sentinel && ./venv/bin/python bin/sentinel.py >> ~/sentinel.log 2>&1" >> $OMEGAHOME/omega_cron >/dev/null 2>&1
+  chown -R $OMEGAUSER: $OMEGAHOME/sentinel >/dev/null 2>&1
+  chown $OMEGAUSER: $OMEGAHOME/omega_cron
   crontab -u $OMEGAUSER omega_cron >/dev/null 2>&1
   rm omega_cron >/dev/null 2>&1
 }
