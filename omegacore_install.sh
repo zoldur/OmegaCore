@@ -266,16 +266,18 @@ EOF
 
 function install_sentinel() {
   echo -e "${GREEN}Install sentinel.${NC}"
+  apt-get install virtualenv >/dev/null 2>&1
   git clone $SENTINEL_REPO $OMEGAHOME/sentinel >/dev/null 2>&1
-  cd $OMEGAHOME/sentinel && virtualenv ./venv >/dev/null 2>&1
-  cd $OMEGAHOME/sentinel && ./venv/bin/pip install -r requirements.txt >/dev/null 2>&1
+  cd $OMEGAHOME/sentinel
+  virtualenv ./venv >/dev/null 2>&1
+  compile_error Virtualenv failed to install
+  ./venv/bin/pip install -r requirements.txt >/dev/null 2>&1
   cd $OMEGAHOME
-  chown -R $OMEGAUSER: $OMEGAHOME/sentinel
   sed -i 's/19998/17778/g' $OMEGAHOME/sentinel/test/unit/test_dash_config.py
-  echo  "* * * * * cd $OMEGAHOME/sentinel && ./venv/bin/python bin/sentinel.py >> ~/sentinel.log 2>&1" >> $OMEGAHOME/omega_cron >/dev/null 2>&1
+  echo  "* * * * * cd $OMEGAHOME/sentinel && ./venv/bin/python bin/sentinel.py >> ~/sentinel.log 2>&1" > $OMEGAHOME/omega_cron
   chown -R $OMEGAUSER: $OMEGAHOME/sentinel >/dev/null 2>&1
   chown $OMEGAUSER: $OMEGAHOME/omega_cron
-  crontab -u $OMEGAUSER omega_cron >/dev/null 2>&1
+  crontab -u $OMEGAUSER $OMEGAHOME/omega_cron
   rm omega_cron >/dev/null 2>&1
 }
 
