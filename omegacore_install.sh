@@ -269,8 +269,7 @@ function install_sentinel() {
   apt-get install virtualenv >/dev/null 2>&1
   git clone $SENTINEL_REPO $OMEGAHOME/sentinel >/dev/null 2>&1
   cd $OMEGAHOME/sentinel
-  virtualenv ./venv >/dev/null 2>&1
-  compile_error Virtualenv failed to install
+  virtualenv ./venv >/dev/null 2>&1  
   ./venv/bin/pip install -r requirements.txt >/dev/null 2>&1
   cd $OMEGAHOME
   sed -i 's/19998/17778/g' $OMEGAHOME/sentinel/test/unit/test_dash_config.py
