@@ -51,8 +51,9 @@ Also, if you want to check/start/stop **OmegaCore** , run one of the following c
 
 ```
 OMEGA_USER=omega  #replace omega with the MN username you want to check  
-  
-systemctl status $OMEGA_USER #To check the service is running. systemctl start $OMEGA_USER #To start Omega service.
+```
+systemctl status $OMEGA_USER #To check the service is running.  
+systemctl start $OMEGA_USER #To start Omega service.  
 systemctl stop $OMEGA_USER #To stop Omega service.  
 systemctl is-enabled $OMEGA_USER #To check whetether Omega service is enabled on boot or not.  
 ```  
