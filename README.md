@@ -3,9 +3,10 @@ Shell script to install an [Omega Core Coin Masternode](http://omegacoin.network
 
 ***
 ## Installation:  
-
-wget -q https://raw.githubusercontent.com/zoldur/OmegaCore/master/omegacore_install.sh  
+```
+wget -q https://raw.githubusercontent.com/zoldur/OmegaCore/master/omegacore_install.sh
 bash omegacore_install.sh
+```
 ***
 
 ## Desktop wallet setup  
@@ -34,21 +35,16 @@ Alias Address Privkey TxHash Output_index
 
 ***
 
-
 ## Usage:  
 
 For security reasons **OmegaCore** is installed under **omega** user, hence you need to **su - omega** before checking:    
-
 ```
 OMEGA_USER=omega #replace omega with the MN username you want to check
-
 su - $OMEGA_USER  
 omegacoin-cli mnsync status  
 omgecoin-cli getinfo  
 ```  
-
 Also, if you want to check/start/stop **OmegaCore** , run one of the following commands as **root**:
-
 ```
 OMEGA_USER=omega  #replace omega with the MN username you want to check  
 
@@ -57,19 +53,17 @@ systemctl start $OMEGA_USER #To start Omega service.
 systemctl stop $OMEGA_USER #To stop Omega service.  
 systemctl is-enabled $OMEGA_USER #To check whetether Omega service is enabled on boot or not.  
 ```  
-
 ***
 
 ## Known issues:
 1. It doesn't work with NATed IP. Or at least I didn't have enough time/use cases to make it work.
-
 ***
 
-  
+## Donations:  
+
 Any donation is highly appreciated  
 
 **OMEGA**: oS12fYXouxKYVZuDaYWTx4UAaxLwjXNmqj  
 **BTC**: 1BzeQ12m4zYaQKqysGNVbQv1taN7qgS8gY  
 **ETH**: 0x39d10fe57611c564abc255ffd7e984dc97e9bd6d  
 **LTC**: LXrWbfeejNQRmRvtzB6Te8yns93Tu3evGf  
-
