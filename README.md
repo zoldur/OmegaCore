@@ -40,9 +40,10 @@ Alias Address Privkey TxHash Output_index
 For security reasons **OmegaCore** is installed under **omega** user, hence you need to **su - omega** before checking:    
 ```
 OMEGA_USER=omega #replace omega with the MN username you want to check
-su - $OMEGA_USER  
-omegacoin-cli mnsync status  
-omgecoin-cli getinfo  
+su - $OMEGA_USER
+omegacoin-cli mnsync status
+omegecoin-cli getinfo
+omegacoin-cli masternode status
 ```  
 Also, if you want to check/start/stop **OmegaCore** , run one of the following commands as **root**:
 ```
