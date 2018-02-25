@@ -228,7 +228,7 @@ function create_config() {
 rpcuser=$RPCUSER
 rpcpassword=$RPCPASSWORD
 rpcallowip=127.0.0.1
-rpcport=$[OMEGAPORT-1]
+rpcport=$[OMEGAPORT+1]
 listen=1
 server=1
 bind=$NODEIP
@@ -241,21 +241,28 @@ function create_key() {
   echo -e "Enter your ${RED}Masternode Private Key${NC}. Leave it blank to generate a new ${RED}Masternode Private Key${NC} for you:"
   read -e OMEGAKEY
   if [[ -z "$OMEGAKEY" ]]; then
-  su $OMEGAUSER -c "$OMEGA_DAEMON -conf=$OMEGAFOLDER/$CONFIG_FILE -datadir=$OMEGAFOLDER"
-  sleep 10
-  if [ -z "$(ps axo user:15,cmd:100 | egrep ^$OMEGAUSER | grep $OMEGA_DAEMON)" ]; then
-   echo -e "${RED}Omega server couldn't start. Check /var/log/syslog for errors.{$NC}"
-   exit 1
+    su $OMEGAUSER -c "$OMEGA_DAEMON -conf=$OMEGAFOLDER/$CONFIG_FILE -datadir=$OMEGAFOLDER"
+    sleep 30
+    if [ -z "$(ps axo user:15,cmd:100 | egrep ^$OMEGAUSER | grep $OMEGA_DAEMON)" ]; then
+     echo -e "${RED}Omega server couldn't start. Check /var/log/syslog for errors.{$NC}"
+     exit 1
+    fi
+    OMEGAKEY=$(su $OMEGAUSER -c "$OMEGA_CLI -conf=$OMEGAFOLDER/$CONFIG_FILE -datadir=$OMEGAFOLDER masternode genkey")
+    if [ "$?" -gt "0" ];
+      then
+       echo -e "${RED}Wallet not fully loaded, need to wait a bit more time. ${NC}"
+       sleep 30
+       OMEGAKEY=$(su $OMEGAUSER -c "$OMEGA_CLI -conf=$OMEGAFOLDER/$CONFIG_FILE -datadir=$OMEGAFOLDER masternode genkey")
+    fi
+    su $OMEGAUSER -c "$OMEGA_CLI -conf=$OMEGAFOLDER/$CONFIG_FILE -datadir=$OMEGAFOLDER stop"
   fi
-  OMEGAKEY=$(su $OMEGAUSER -c "$OMEGA_CLI -conf=$OMEGAFOLDER/$CONFIG_FILE -datadir=$OMEGAFOLDER masternode genkey")
-  su $OMEGAUSER -c "$OMEGA_CLI -conf=$OMEGAFOLDER/$CONFIG_FILE -datadir=$OMEGAFOLDER stop"
-fi
 }
 
 function update_config() {
   sed -i 's/daemon=1/daemon=0/' $OMEGAFOLDER/$CONFIG_FILE
   cat << EOF >> $OMEGAFOLDER/$CONFIG_FILE
 maxconnections=256
+externalip=$NODEIP
 masternode=1
 masternodeaddr=$NODEIP:$OMEGAPORT
 masternodeprivkey=$OMEGAKEY
