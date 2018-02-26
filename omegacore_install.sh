@@ -272,6 +272,7 @@ EOF
 
 
 function install_sentinel() {
+  SENTINELPORT=$[10001+$OMEGAPORT]
   echo -e "${GREEN}Install sentinel.${NC}"
   apt-get install virtualenv >/dev/null 2>&1
   git clone $SENTINEL_REPO $OMEGAHOME/sentinel >/dev/null 2>&1
@@ -279,7 +280,7 @@ function install_sentinel() {
   virtualenv ./venv >/dev/null 2>&1  
   ./venv/bin/pip install -r requirements.txt >/dev/null 2>&1
   cd $OMEGAHOME
-  sed -i 's/19998/17778/g' $OMEGAHOME/sentinel/test/unit/test_dash_config.py
+  sed -i "s/19998/$SENTINELPORT/g" $OMEGAHOME/sentinel/test/unit/test_dash_config.py
   echo  "* * * * * cd $OMEGAHOME/sentinel && ./venv/bin/python bin/sentinel.py >> ~/sentinel.log 2>&1" > $OMEGAHOME/omega_cron
   chown -R $OMEGAUSER: $OMEGAHOME/sentinel >/dev/null 2>&1
   chown $OMEGAUSER: $OMEGAHOME/omega_cron
