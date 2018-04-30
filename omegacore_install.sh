@@ -84,7 +84,7 @@ apt-get update >/dev/null 2>&1
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" make software-properties-common \
 build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev \
 libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget pwgen curl libdb4.8-dev bsdmainutils libdb4.8++-dev \
-libminiupnpc-dev libgmp3-dev ufw fail2ban python-virtualenv >/dev/null 2>&1
+libminiupnpc-dev libgmp3-dev ufw python-virtualenv unzip >/dev/null 2>&1
 clear
 if [ "$?" -gt "0" ];
   then
@@ -95,7 +95,7 @@ if [ "$?" -gt "0" ];
     echo "apt-get update"
     echo "apt install -y make build-essential libtool software-properties-common autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev \
 libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git pwgen curl libdb4.8-dev \
-bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw fail2ban python-virtualenv"
+bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw fail2ban python-virtualenv unzip"
  exit 1
 fi
 
@@ -121,24 +121,23 @@ function compile_node() {
   echo -e "Download binaries. This may take some time. Press a key to continue."
   cd $TMP_FOLDER >/dev/null 2>&1
   wget -q $OMEGA_REPO >/dev/null 2>&1
-  tar xvzf $(echo $OMEGA_REPO | awk -F"/" '{print $NF}') --strip 1 >/dev/null 2>&1
+  unzip $(echo $OMEGA_REPO | awk -F"/" '{print $NF}') >/dev/null 2>&1
   compile_error OmegaCoin
-  cp bin/omega* /usr/local/bin
-  cd ~
+  cp omega* /usr/local/bin
+  chmod +x /usr/local/bin/omega*
+  cd - 
   rm -rf $TMP_FOLDER
   clear
 }
 
 function enable_firewall() {
-  echo -e "Installing fail2ban and setting up firewall to allow ingress on port ${GREEN}$OMEGAPORT${NC}"
+  echo -e "Installing and etting up firewall to allow ingress on port ${GREEN}$OMEGAPORT${NC}"
   ufw allow $OMEGAPORT/tcp comment "OMEGA MN port" >/dev/null
   ufw allow $[OMEGAPORT+1]/tcp comment "OMEGA RPC port" >/dev/null
   ufw allow ssh comment "SSH" >/dev/null 2>&1
   ufw limit ssh/tcp >/dev/null 2>&1
   ufw default allow outgoing >/dev/null 2>&1
   echo "y" | ufw enable >/dev/null 2>&1
-  systemctl enable fail2ban >/dev/null 2>&1
-  systemctl start fail2ban >/dev/null 2>&1
 }
 
 function configure_systemd() {
@@ -231,7 +230,7 @@ rpcallowip=127.0.0.1
 rpcport=$[OMEGAPORT+1]
 listen=1
 server=1
-bind=$NODEIP
+#bind=$NODEIP
 daemon=1
 port=$OMEGAPORT
 EOF
